@@ -1,0 +1,5 @@
+flask
+pathlib
+python-dotenv   
+earthengine-api
+ee
