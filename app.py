@@ -17,13 +17,13 @@ def capture_image():
 
     # Get the request data
     data = request.get_json()
-    north = data['north']
-    south = data['south']
-    east = data['east']
-    west = data['west']
+    firstCoordinate = data['firstCoordinate']
+    secondCoordinate = data['secondCoordinate']
+    thirdCoordinate = data['thirdCoordinate']
+    fourthCoordinate = data['fourthCoordinate']
     
     # Capture the image
-    url = capture.capture_image(north, south, east, west)
+    url = capture.capture_image(firstCoordinate, secondCoordinate, thirdCoordinate, fourthCoordinate)
     
     # Return a response
     return jsonify({'message': 'Image captured', 'url': url})

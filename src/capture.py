@@ -1,9 +1,9 @@
 import json
 import ee
 
-def capture_image(firstCoordinate, secondCoordinate, thirdCoordinate, forthCoordinate):
+def capture_image(firstCoordinate, secondCoordinate, thirdCoordinate, fourthCoordinate):
     # Define the bounding box as a rectangle
-    bounding_box = ee.Geometry.Rectangle([], proj='EPSG:4326')
+    bounding_box = ee.Geometry.Rectangle([firstCoordinate,secondCoordinate,thirdCoordinate,fourthCoordinate], proj='EPSG:4326')
 
     # Create an image collection representing a single image at the specified location and zoom level
     image_collection = ee.ImageCollection('LANDSAT/LC08/C02/T1_TOA') \
