@@ -1,8 +1,15 @@
 import src.capture as capture
 from flask import Flask, request, jsonify
+import ee
+
 
 app = Flask(__name__)
 
+@app.route('/', methods=['GET'])
+
+def home():
+    ee.Initialize(project = "ee-glorioussatria")
+    return jsonify({'message': 'Welcome to the Earth Engine API!'})
 
 @app.route('/capture', methods=['POST'])
 
@@ -10,14 +17,14 @@ def capture_image():
 
     # Get the request data
     data = request.get_json()
-    latitude = data['latitude']
-    longitude = data['longitude']
-    zoom = data.get('zoom', 12)
-    output_file = data.get('output_file', 'output.json')
+    north = data['north']
+    south = data['south']
+    east = data['east']
+    west = data['west']
     
     # Capture the image
-    capture.capture_image(latitude, longitude, zoom, output_file)
+    url = capture.capture_image(north, south, east, west)
     
     # Return a response
-    return jsonify({'message': 'Image captured and JSON file saved as {output_file}'})
+    return jsonify({'message': 'Image captured', 'url': url})
 

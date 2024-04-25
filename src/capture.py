@@ -1,36 +1,41 @@
-import ee
 import json
+import ee
 
-# Authenticate to Earth Engine
-
-def capture_image(latitude, longitude, zoom=12, output_file="output.json"):
-    ee.Authenticate()
-    ee.Initialize()
-    # Define the coordinates
-    location = ee.Geometry.Point(longitude, latitude)
+def capture_image(firstCoordinate, secondCoordinate, thirdCoordinate, forthCoordinate):
+    # Define the bounding box as a rectangle
+    bounding_box = ee.Geometry.Rectangle([], proj='EPSG:4326')
 
     # Create an image collection representing a single image at the specified location and zoom level
-    image = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR') \
-        .filterBounds(location) \
-        .sort('CLOUD_COVER') \
-        .first()
+    image_collection = ee.ImageCollection('LANDSAT/LC08/C02/T1_TOA') \
+        .filterBounds(bounding_box) \
+        .sort('CLOUD_COVER')
 
-    # Get a URL to the image thumbnail
-    thumbnail_url = image.getThumbUrl({
+    # Check if the image collection is empty
+    if image_collection.size().getInfo() == 0:
+        print("No images found for the specified bounding box.")
+        return
+
+    # Get the first image from the collection
+    image = image_collection.first()
+
+    # Clip the image to the defined location
+    clipped_image = image.clipToBoundsAndScale(geometry=bounding_box)
+
+    # Specify visualization parameters
+    vis_params = {
+        'bands': ['B4', 'B3', 'B2'],  # True Color (Red, Green, Blue)
         'min': 0,
-        'max': 3000,
-        'dimensions': 512,
-        'region': location,
-        'format': 'png'
-    })
-
-    # Create a JSON object with the thumbnail URL
-    result = {
-        'thumbnail_url': thumbnail_url
+        'max': 0.3
     }
+    # Get the whole image URL
+    image_url = clipped_image.getDownloadURL({
+        'scale': 70,  # Adjusted to 70 meters
+        'region': bounding_box,
+        'crs': 'EPSG:4326'  # Specify the desired coordinate reference system
+    })
+    
+    # Return the image URL
+    return image_url
+   
 
-    # Save the JSON object to a file
-    with open(output_file, 'w') as f:
-        json.dump(result, f)
-
-    print(f"Image captured and JSON file saved as {output_file}")
+ 
