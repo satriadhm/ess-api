@@ -41,7 +41,7 @@ def predict_image_mobile():
 @app.route('/predict-web', methods=['POST'])
 
 def predict_image_web():
-    model = joblib.load('model/modelVGG.pkl', 'rb')
+    model = joblib.load('model/modelVGG.sav')
     response = model.predict_image_class(model, 'data1.jpg')
     return jsonify({'message': 'Image predicted', 'class': response})
 
